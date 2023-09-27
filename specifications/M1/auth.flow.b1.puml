@@ -1,0 +1,30 @@
+@startuml
+!pragma layout smetana
+
+!include diagram.styles.puml
+
+autonumber
+
+box "Client (Consumer) Entity"
+participant "Client" as C
+participant "Secure Token Service" as STS
+participant "Credential Service" as CS
+end box
+
+box "Verifier (Provider) Entity"
+participant "Resource Server\n(DSP endpoint)" as RS
+participant "Authorization Server" as AS
+end box
+
+C -> STS: SI token request
+STS -> C: Token response w/ access token
+
+C-> AS: Request w/ si token and access token
+
+AS-> CS: request w/ access token
+CS ->AS: VP response
+
+AS -> C: <b>provider</b> access token
+
+C-> RS: request w/ <b>provider</b> access token
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!pragma layout smetana
+
+!include diagram.styles.puml
+
+autonumber
+
+box "Client (Consumer) Entity"
+participant "Client" as C
+participant "Secure Token Service" as STS
+participant "Credential Service" as CS
+end box
+
+box "Verifier (Provider) Entity"
+participant "Resource Server\n(DSP endpoint)" as RS
+participant "Authorization Server" as AS
+end box
+
+C -> STS: SI token request
+STS -> C: Token response w/ access token
+
+C-> AS: Request w/ si token and access token
+AS -[#red]> C: 403 Forbidden with OID4VP request object
+C -> CS: OID4VP request object
+CS -> AS: VP response
+AS -> CS: <b>provider</b> access token
+CS -> C: <b>provider</b> access token
+
+C-> RS: request w/ <b>provider</b> access token
+@enduml
