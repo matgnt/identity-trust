@@ -1,0 +1,58 @@
+@startuml
+!pragma layout smetana
+
+!include diagram.styles.puml
+
+autonumber
+
+box "Client (Consumer) Entity"
+participant "Client" as C
+participant "Wallet" as W
+end box
+
+box "Verifier (Provider) Entity"
+participant "Resource Server\n(e.g. DSP endpoint)" as RS
+participant "Authorization Server\nendpoints\n/rigster\n/token" as AS
+participant "Wallet" as PW
+end box
+
+C -> C: generate auth token
+
+C -> C: Read policy from catalog
+
+== VC required preparation ==
+group Not yet available!
+C -> C: Read additional meta data\nwhich VCs are required
+end
+
+group ...or use 'pre-defined mapping'
+C -> C: translate policy rules to VCs
+end
+
+C -[#red]-> AS: without auth token
+AS -[#red]-> C: nonce
+
+C -> W: Fetch VCs, provide nonce
+W -> W: sign with nonce
+W -> C: VP
+note over C, W
+Actually it might not be required to create VPs.
+In case VC contains a well know public ID, e.g. the BPN
+And BPN auth token binding has been proven earlier (/register),
+the 'pure' VC might be enough.
+end note
+ 
+C -[#red]-> AS: POST /update\nAuthorization: auth token\nBody: VPs
+AS -> PW: Store / Update client's VCs
+AS -[#red]-> C: 200 OK
+
+== DSP flow ==
+
+C -> RS: DSP request
+RS -> RS: on DSP application layer\ncheck VCs
+RS -> PW: get VC for client
+PW -> RS: VCs
+RS -> RS: decide
+RS -> C: DSP response
+
+@enduml

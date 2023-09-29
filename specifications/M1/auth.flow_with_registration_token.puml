@@ -1,0 +1,31 @@
+@startuml
+!pragma layout smetana
+
+!include diagram.styles.puml
+
+autonumber
+
+box "Client (Consumer) Entity"
+participant "Client" as C
+participant "Wallet" as W
+end box
+
+box "Verifier (Provider) Entity"
+participant "Resource Server\n(e.g. DSP endpoint)" as RS
+participant "Authorization Server\nendpoints\n/rigster\n/token" as AS
+end box
+
+C -> C: generate auth token
+
+C -> AS: /token\n(provide auth token)
+AS -> AS: Lookup identity\n(auth token pub key)
+note over AS
+Check VCs from previous
+dynamic registration process.
+end note
+
+AS -> C: access token\n(optionally bound to the client identity)
+C -> RS: GET /catalog\n(with access token)
+RS -> RS: Verify Auth Server signature\nCheck scopes
+RS -> C: catalog response
+@enduml

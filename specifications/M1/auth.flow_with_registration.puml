@@ -1,0 +1,37 @@
+@startuml
+!pragma layout smetana
+
+!include diagram.styles.puml
+
+autonumber
+
+box "Client (Consumer) Entity"
+participant "Client" as C
+participant "Wallet" as W
+end box
+
+box "Verifier (Provider) Entity"
+participant "Resource Server\n(e.g. DSP endpoint)" as RS
+participant "Authorization Server\nendpoints\n/rigster\n/token" as AS
+end box
+
+C -> C: generate auth token
+
+C -> AS: POST <b>/register</b>\n(without authentication)
+AS -> C: nonce
+
+C -> W: nonce
+W -> W: Create VP with nonce
+W -> C: VP
+
+C -> C: Add VP to auth token
+C -> C: Include nonce and sign
+
+C -> AS: POST /register\nAuthorization <JWT>
+AS -> AS: Verify VC and VP signature\nand auth token signature
+AS -> AS: Store correlation between\nauth token identifier (pub key)\nand VC subject identifier
+AS -> C: 201 client created
+
+
+
+@enduml
