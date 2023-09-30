@@ -6,16 +6,21 @@ The often (often in technical systems communication) used 'client credentials' f
 
 With **client credentials** flow, the *authorization* is stored in the client's credentials it uses to authenticate itself at the authorization server.
 
-Especially in a Dataspace, to manually register every client with every other dataspace partcipant's Authorization Server. A dynamic, automated registration, based on VCs each participant receives, is a scalable solution that still allows the use of well known OAuth *client credentials* flow.
+Especially in a Dataspace, to manually register every client with every other dataspace partcipant's Authorization Server is unrealistic and against the gernal idea of the 'register once and communicate with all' dataspace idea.
+
+A dynamic, automated registration, based on VCs, is a scalable solution that still allows the use of well known OAuth *client credentials* flow.
 
 **OAuth 2.0 Dynamic Client Registration Protocol**
 https://datatracker.ietf.org/doc/html/rfc7591#section-3
 
-As of now, there is no such dyanmic client registration starnadized that makes use of VCs.
+As of now, there is no such dyanmic client registration starnadized that makes use of VCs. The following sections will describe how this can be done:
 
 ## VC based dynamic client registration
 ![](auth.flow_with_registration.png)
 
+The *auth token* is based on a local pubic / private key pair. It is also possible to use different (multiple) such key pairs, menaing a separate *connection key pair* if desired.
+
+## Access Token
 After the client is registered, a regular access token to access a resource at another's participant resource can be fetched.
 ![](auth.flow_with_registration_token.png)
 
