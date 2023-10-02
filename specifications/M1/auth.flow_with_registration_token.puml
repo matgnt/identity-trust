@@ -12,7 +12,7 @@ end box
 
 box "Verifier (Provider) Entity"
 participant "Resource Server\n(e.g. DSP endpoint)" as RS
-participant "Authorization Server\nendpoints\n/rigster\n/token" as AS
+participant "Authorization Server\nendpoints\n/register\n/token" as AS
 end box
 
 C -> C: generate auth token
