@@ -29,8 +29,8 @@ group ...or use 'pre-defined mapping'
 C -> C: translate policy rules to VCs
 end
 
-C -[#red]-> AS: without auth token
-AS -[#red]-> C: nonce
+C -[#red]-> AS: <b>/register</b>\n(without auth token!)
+AS -[#red]-> C: 401 Unauthorized, with <b>nonce</b>
 
 C -> W: Fetch VCs, provide nonce
 W -> W: sign with nonce
@@ -38,11 +38,12 @@ W -> C: VP
 note over C, W
 Actually it might not be required to create VPs.
 In case VC contains a well know public ID, e.g. the BPN
-And BPN auth token binding has been proven earlier (/register),
+And BPN auth token binding has been proven earlier
+(first <b>/register</b> call),
 the 'pure' VC might be enough.
 end note
  
-C -[#red]-> AS: POST /update\nAuthorization: auth token\nBody: VPs
+C -[#red]-> AS: POST <b>/register</b>\nAuthorization: auth token\nBody: VPs
 AS -> PW: Store / Update client's VCs
 AS -[#red]-> C: 200 OK
 

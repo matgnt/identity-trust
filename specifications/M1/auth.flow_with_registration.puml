@@ -13,6 +13,7 @@ end box
 box "Verifier (Provider) Entity"
 participant "Resource Server\n(e.g. DSP endpoint)" as RS
 participant "Authorization Server\nendpoints\n/rigster\n/token" as AS
+participant "Wallet" as PW
 end box
 
 C -> C: generate auth token
@@ -30,6 +31,12 @@ C -> C: Include nonce and sign
 C -> AS: POST /register\nAuthorization <JWT>
 AS -> AS: Verify VC and VP signature\nand auth token signature
 AS -> AS: Store correlation between\nauth token identifier (pub key)\nand VC subject identifier
+note over AS, PW
+One VC is the 'root of trust'
+kind of VC, that proves the dataspace
+identifier, e.g. the BPN
+end note
+AS -> PW: Store / Update client's VCs
 AS -> C: 201 client created
 
 

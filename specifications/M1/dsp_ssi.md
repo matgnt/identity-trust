@@ -24,12 +24,20 @@ The *auth token* is based on a local pubic / private key pair. It is also possib
 After the client is registered, a regular access token to access a resource at another's participant resource can be fetched.
 ![](auth.flow_with_registration_token.png)
 
-# DSP
-Now the DSP protocol specific questions.
+## Considerations
+Whenever a new client registers, even when it is already known via the public identifier (e.g. BPN), the authorization server MUST create a new connection and MUST not re-map existing VCs to the new connection identity. This allows the client to re-generate new connection identities and clearly knowing what authorization is loaded to this specific identity and gives the Client mor sovereignty about what authorization to use in what call.
 
-3rd party attested claims (VCs) that are supposed to be used beyond simple resrouce access control need to be handled differently.
+## Verifier tasks during authorization at the /token endpoint
+![](auth.flow_verifier_auth_tasks.png)
 
-Namely VCs required as part of a DSP contract negotiation process.
+Generally the validity of the VC, which are the basis for authorization need to be checked before a new access token is issued.
+
+This includes the expiration date and revication status of the VCs.
+
+# Dataspace Protocol Integeration
+Application layer protocol such as the Dataspace Protocol (DSP) can integrate the flow with the following consideration.
+
+In DSP, the 3rd party attested claims (VCs) are supposed to be used beyond simple resrouce access control, e.g. as part of the DSP contract negotiation process.
 
 If VCs are required to proof fullfilling certain DSP contract policies, there are a few steps required:
 
@@ -37,6 +45,10 @@ If VCs are required to proof fullfilling certain DSP contract policies, there ar
 - DSP shoud provide a mechanism to transfer the required proofs
 - DSP needs to define errors in case those proofs are not accepted
 
-The transfer of the proofs (VCs) may be defined as out-of-band. This is not the desired approach, but because of other constraints, it might be the intermediate solution.
+The transfer of the proofs (VCs) may be defined as out-of-band for the DSP protocol. This is not the desired approach, but could be seen as an intermediate solution step.
 
 ![](auth.flow_dsp_contract_negotiation.png)
+
+The general question is, how does the application layer protocol (DSP) know or map its requirements. In the fist step, this can be a dataspace specific pre-defined mapping of Policies into a VC requirments list. Generally, the protocol should provide a mechanism to transfer a specific list of such proof requirements.
+
+The depicted flow uses the OAuth dynamic client registration endpoint to add additional authorizations (VCs) to the Client's identity. Once done, the DSP contract negotiation is started and the provider needs to check whether all required proofs are 'loaded onto the identity' in an out-of band step that queries the Wallet.

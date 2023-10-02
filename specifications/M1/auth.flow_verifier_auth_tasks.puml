@@ -1,0 +1,33 @@
+@startuml
+!pragma layout smetana
+
+!include diagram.styles.puml
+
+autonumber
+
+box "Client (Consumer) Entity"
+participant "Client" as C
+participant "Wallet" as W
+end box
+
+box "Verifier (Provider) Entity"
+participant "Resource Server\n(e.g. DSP endpoint)" as RS
+participant "Authorization Server\nendpoints\n/rigster\n/token" as AS
+participant "Wallet" as PW
+end box
+
+C -> AS: /token\nAuthorization with auth token
+
+AS -> AS: Verify auth token / identity
+AS -> AS: Read requested sopes
+AS -> PW: Query Client's VCs\n(which are required for the scopes)
+PW -> PW: Check VC validity
+note over AS, PW
+Before returning the VCs,
+check the <b>Expiration Date</b> and
+the <b>Revication Status</b>
+end note
+
+AS -> C: Access Token\nor 403 Forbidden in case of missing (invalid) VCs
+
+@enduml
