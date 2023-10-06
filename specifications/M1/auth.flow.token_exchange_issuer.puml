@@ -11,17 +11,17 @@ participant "Secure Token Service" as STS
 participant "Credential Service" as CS
 end box
 
-box "Verifier Entity"
-participant "Resource Server\n(DSP endpoint)" as RS
+box "Issuer Entity"
+participant "Resource Server\n(Credential Issuer)" as RS
 participant "Authorization Server" as AS
 end box
 
 C -> CS: Request: VCs
 CS -> C: Response: VCs
 
-C-> AS: POST <b>/token</b>?scope=xxx,yyy\nBody: VCs/VPs
-AS -> C: access token
+C-> AS: POST <b>/token</b>?scope=<b>Membership:issue</b>\n<b>Body: VCs/VPs</b>
+AS -> C: access token (contains: scope, relevant IDs, e.g. DID, BPN)
 
-C -> RS: Request w/ access token (e.g. /catalog)
+C -> RS: Request VC w/ access token (e.g. GET /credential)
 
 @enduml
