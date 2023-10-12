@@ -1,5 +1,6 @@
 # Token Exchange
 
+# Overview
 ## Presentation
 A very simple approach that supports 'pushing' VCs is as follows:
 ![](auth.flow.token_exchange.png)
@@ -14,3 +15,48 @@ Additionally, a binding of the access token should be considered.
 ## Issuing
 ![](auth.flow.token_exchange_issuer.png)
 
+
+# Details
+## General
+
+### Client Authentication
+Client authentication is based on [JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants](https://datatracker.ietf.org/doc/html/rfc7523)
+
+This authentication method name is defined in [OpenID Connect Core 1.0 incorporating errata set 1](https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication)
+
+The method used in this specification is: `private_key_jwt`
+
+A separate `authorization request / grant` is not required when a client authentication covers the authorization, see [The OAuth 2.0 Authorization Framework, Client Credentials Grant, Authorization Request and Response](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.4.1)
+
+The OAuth Framework generally also allows unregistered clients! [The OAuth 2.0 Authorization Framework, Unregistered Clients](https://www.rfc-editor.org/rfc/rfc6749.html#section-2.4)
+
+### private_key_jwt
+Structure accroding to [JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants](https://datatracker.ietf.org/doc/html/rfc7523) and [OpenID Connect Core 1.0 incorporating errata set 1
+, Client Authentication](https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication):
+
+- `iss`: REQUIRED. Issuer. This MUST contain the `client_id` of the OAuth Client.
+- `sub`: REQUIRED. Subject. This MUST contain the `client_id` of the OAuth Client.
+- `aud`: REQUIRED. Audience. The `aud` (audience) Claim. Value that identifies the Authorization Server as an intended audience. The Authorization Server MUST verify that it is an intended audience for the token. The Audience SHOULD be the URL of the Authorization Server's Token Endpoint.
+- `jti`: REQUIRED. JWT ID. A unique identifier for the token, which can be used to prevent reuse of the token. These tokens MUST only be used once, unless conditions for reuse were negotiated between the parties; any such negotiation is beyond the scope of this specification.
+- `exp`: REQUIRED. Expiration time on or after which the ID Token MUST NOT be accepted for processing.
+- `iat`: OPTIONAL. Time at which the JWT was issued.
+
+
+### private_key_jwt extension with `vc` and `vp`
+The afore described `private_key_jwt` token structure is exted by this specification with the following attributes:
+> TODO: https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#section-e.1 and https://www.w3.org/TR/vc-data-model/#json-web-token-extensions
+
+- `vp`:
+- `vc`:
+
+### `VP` vs `VC`
+Signatures / proofs are required for the `private_key_jwt` (the authentication token) and the proof that confirms the `participant_id` and `did`
+
+The additional claims don't necessarily need to be part of a `VP`, but via their `credentialSubject.@id` are bound to their `did` (potentially also to their `participant_id`)
+
+Only if the claims are required to be bound to a specific transaction, a `VP` with a challenge response (`nonce` / `challenge`) needs to be used. In most cases in Dataspace connections, this is not the case.
+
+
+## Presentation
+
+## Issuance
