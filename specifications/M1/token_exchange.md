@@ -19,6 +19,13 @@ Additionally, a binding of the access token should be considered.
 # Details
 ## General
 
+This specification uses [RFC 7523 - JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants](https://datatracker.ietf.org/doc/html/rfc7523) with an optional [RFC 7591 - OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
+
+Both, the `/token` and `/register` endpoints are extended by this specification to receive Verifiable Credentials and Presentations to be included for authorization.
+
+The *Dynamic Client Registration* is optional, since all required credentials can be used during the token exchange. OAuth does not reuqire registered clients. Especially in cases when *Clients* do not have access to relevant credentials another entity, that has access to such higher trust credentials (e.g. a *legal PID* / a legal entity identifier credential), may pre-register a *Client*.
+
+
 ### Client Authentication
 Client authentication is based on [JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants](https://datatracker.ietf.org/doc/html/rfc7523)
 
@@ -56,6 +63,35 @@ The additional claims don't necessarily need to be part of a `VP`, but via their
 
 Only if the claims are required to be bound to a specific transaction, a `VP` with a challenge response (`nonce` / `challenge`) needs to be used. In most cases in Dataspace connections, this is not the case.
 
+### Interoperability Agreements
+
+[Interoperability Considerations](https://datatracker.ietf.org/doc/html/rfc7523#section-5)
+
+- identifiers: `did:web` according to [did:web Method Specification](https://w3c-ccg.github.io/did-method-web/)
+- keys: unique key identifier fetched from DID documents
+- endpoints: the **/token** endpoint at the authorization server is added to the DID document `service` list with the type `AuthorizationServerTokenEndpoint`
+
+### Client Authentication /token
+Client authentication is specified in
+[JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants, Using JWTs for Client Authentication](https://datatracker.ietf.org/doc/html/rfc7523#section-2.2)
+
+#### Request
+> Non-normative example:
+The value of the "client_assertion_type" is "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+
+```
+POST /token HTTP/1.1
+Host: as.example.com
+Content-Type: application/x-www-form-urlencoded
+
+client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3A
+client-assertion-type%3Ajwt-bearer&
+client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0...
+```
+
+#### Response
+
+#### Error
 
 ## Presentation
 
