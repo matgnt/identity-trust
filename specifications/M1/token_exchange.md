@@ -48,6 +48,14 @@ Structure accroding to [JSON Web Token (JWT) Profile for OAuth 2.0 Client Authen
 - `exp`: REQUIRED. Expiration time on or after which the ID Token MUST NOT be accepted for processing.
 - `iat`: OPTIONAL. Time at which the JWT was issued.
 
+### private_key_jwt extension with `sub_jwk`
+This specification further specifies the `sub_jwk` claim, also described in [Self-Issued ID Token, Self-Issued OpenID Provider v2](https://openid.github.io/SIOPv2/openid-connect-self-issued-v2-wg-draft.html#section-11)
+
+With the `sub_jwk` thumbprint used as the identifier in `kid`, `iss` and `sub`, it is prefixed as described in [RFC 9278 - JWK Thumbprint URI](https://datatracker.ietf.org/doc/html/rfc9278) with e.g. `urn:ietf:params:oauth:jwk-thumbprint:sha-256:` depending on the used hasing algorithm. This specification assumes SHA256.
+
+Alternatively, a DID (Decentralized Identifier) with scheme `did` can be used. Consequentely, the signing key needs to be resolvable via the respective DID document.
+
+> TODO: meta information to define what signing methods are allowed
 
 ### private_key_jwt extension with `vc` and `vp`
 The afore described `private_key_jwt` token structure is exted by this specification with the following attributes:
